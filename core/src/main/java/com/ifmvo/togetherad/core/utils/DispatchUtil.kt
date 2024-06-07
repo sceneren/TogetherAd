@@ -32,7 +32,7 @@ object DispatchUtil {
      * 取权重最高的那个
      */
     private fun getAdProviderPriority(@NotNull ratioMap: HashMap<String, Int>): String? {
-        "提供商权重：$ratioMap".logi()
+        "提供商权重2：$ratioMap".logi()
         val sortedList = ratioMap.entries.filter { it.value != 0 }.sortedByDescending { it.value }
         val selectedKey = sortedList.getOrNull(0)?.key
         "权重最高的是: $selectedKey".logi()
@@ -57,7 +57,7 @@ object DispatchUtil {
             }
         }
 
-        "提供商权重：$ratio".logi()
+        "提供商权重1：$ratio".logi()
 
         //没有匹配的
         if (list.isEmpty()) return null
@@ -72,7 +72,7 @@ object DispatchUtil {
      * return AdNameType.BAIDU  || AdNameType.GDT || AdNameType.CSJ
      */
     private fun getAdProviderRandom(@NotNull ratio: String): String? {
-        "提供商权重：$ratio".logi()
+        "提供商权重3：$ratio".logi()
         val list = mutableListOf<String>()
         //{baidu:2},{gdt:8}
         val split = ratio.split(",")

@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import com.bytedance.sdk.openadsdk.TTAdConstant
 import com.ifmvo.togetherad.core.custom.splashSkip.SplashSkipViewSimple2
 import com.ifmvo.togetherad.core.helper.AdHelperSplash
 import com.ifmvo.togetherad.core.listener.SplashListener
@@ -18,7 +17,9 @@ import com.ifmvo.togetherad.demo.MainActivity
 import com.ifmvo.togetherad.demo.R
 import com.ifmvo.togetherad.demo.app.AdProviderType
 import com.ifmvo.togetherad.demo.app.TogetherAdAlias
-import kotlinx.android.synthetic.main.activity_splash.*
+import kotlinx.android.synthetic.main.activity_splash.adContainer
+import kotlinx.android.synthetic.main.activity_splash.info
+import kotlinx.android.synthetic.main.activity_splash.log
 
 /**
  * 开屏广告使用示例
@@ -69,7 +70,10 @@ class SplashActivity : AppCompatActivity() {
          * 给 穿山甲 设置可接受的图片尺寸，避免图片变形
          * 一般设置容器的宽高即可
          */
-        CsjProvider.Splash.setImageAcceptedSize(ScreenUtil.getDisplayMetricsWidth(this), ScreenUtil.getDisplayMetricsHeight(this) - 100f.dp.toInt())
+        CsjProvider.Splash.setImageAcceptedSize(
+            ScreenUtil.getDisplayMetricsWidth(this),
+            ScreenUtil.getDisplayMetricsHeight(this) - 100f.dp.toInt()
+        )
 
         /**
          * 设置 穿山甲 开屏广告超时时间
@@ -80,10 +84,10 @@ class SplashActivity : AppCompatActivity() {
 
         //使用 Map<String, Int> 配置广告商 权重，通俗的讲就是 随机请求的概率占比
         val ratioMapSplash = linkedMapOf(
-                AdProviderType.GDT.type to 1,
-                AdProviderType.CSJ.type to 1,
-                AdProviderType.KS.type to 1,
-                AdProviderType.BAIDU.type to 1
+            AdProviderType.GDT.type to 1,
+            AdProviderType.CSJ.type to 1,
+            AdProviderType.KS.type to 1,
+            AdProviderType.BAIDU.type to 1
         )
 
         /**
@@ -93,53 +97,58 @@ class SplashActivity : AppCompatActivity() {
          * container: 必传。请求到广告之后会自动添加到 container 这个布局中展示。
          * listener: 非必传。如果你不需要监听结果可以不传或传空。各个回调方法也可以选择性添加
          */
-        AdHelperSplash.show(activity = this, alias = TogetherAdAlias.AD_SPLASH, /*ratioMap = ratioMapSplash,*/ container = adContainer, listener = object : SplashListener {
+        AdHelperSplash.show(
+            activity = this,
+            alias = TogetherAdAlias.AD_SPLASH,
+            ratioMap = ratioMapSplash,
+            container = adContainer,
+            listener = object : SplashListener {
 
-            override fun onAdStartRequest(providerType: String) {
-                //在开始请求之前会回调此方法，失败切换的情况会回调多次
-                addLog("\n开屏广告开始请求，$providerType")
-                "onAdStartRequest: $providerType".logi(tag)
-            }
+                override fun onAdStartRequest(providerType: String) {
+                    //在开始请求之前会回调此方法，失败切换的情况会回调多次
+                    addLog("\n开屏广告开始请求，$providerType")
+                    "onAdStartRequest: $providerType".logi(tag)
+                }
 
-            override fun onAdLoaded(providerType: String) {
-                //广告请求成功的回调，每次请求只回调一次
-                addLog("开屏广告请求好了，$providerType")
-                "onAdLoaded: $providerType".logi(tag)
-            }
+                override fun onAdLoaded(providerType: String) {
+                    //广告请求成功的回调，每次请求只回调一次
+                    addLog("开屏广告请求好了，$providerType")
+                    "onAdLoaded: $providerType".logi(tag)
+                }
 
-            override fun onAdClicked(providerType: String) {
-                //点击广告的回调
-                addLog("开屏广告被点击了，$providerType")
-                "onAdClicked: $providerType".logi(tag)
-            }
+                override fun onAdClicked(providerType: String) {
+                    //点击广告的回调
+                    addLog("开屏广告被点击了，$providerType")
+                    "onAdClicked: $providerType".logi(tag)
+                }
 
-            override fun onAdExposure(providerType: String) {
-                //广告展示曝光的回调
-                addLog("开屏广告曝光了，$providerType")
-                "onAdExposure: $providerType".logi(tag)
-            }
+                override fun onAdExposure(providerType: String) {
+                    //广告展示曝光的回调
+                    addLog("开屏广告曝光了，$providerType")
+                    "onAdExposure: $providerType".logi(tag)
+                }
 
-            override fun onAdFailed(providerType: String, failedMsg: String?) {
-                //请求失败的回调，失败切换的情况会回调多次
-                addLog("开屏广告单个提供商请求失败了，$failedMsg, $providerType")
-                "onAdFailed: $providerType: $failedMsg".loge(tag)
-            }
+                override fun onAdFailed(providerType: String, failedMsg: String?) {
+                    //请求失败的回调，失败切换的情况会回调多次
+                    addLog("开屏广告单个提供商请求失败了，$failedMsg, $providerType")
+                    "onAdFailed: $providerType: $failedMsg".loge(tag)
+                }
 
-            override fun onAdFailedAll(failedMsg: String?) {
-                //所有配置的广告商都请求失败了，只有在全部失败之后会回调一次
-                addLog("全部请求失败了")
-                "onAdFailedAll".loge(tag)
-                actionHome(1000)
-            }
+                override fun onAdFailedAll(failedMsg: String?) {
+                    //所有配置的广告商都请求失败了，只有在全部失败之后会回调一次
+                    addLog("全部请求失败了,${failedMsg}")
+                    "onAdFailedAll".loge(tag)
+                    actionHome(1000)
+                }
 
-            override fun onAdDismissed(providerType: String) {
-                //开屏广告消失了，点了跳过按钮或者倒计时结束之后会回调一次
-                //在这里跳转主界面，并关闭 Splash
-                addLog("开屏广告点了跳过或者倒计时结束， $providerType")
-                "onAdDismissed: $providerType".logi(tag)
-                actionHome()
-            }
-        })
+                override fun onAdDismissed(providerType: String) {
+                    //开屏广告消失了，点了跳过按钮或者倒计时结束之后会回调一次
+                    //在这里跳转主界面，并关闭 Splash
+                    addLog("开屏广告点了跳过或者倒计时结束， $providerType")
+                    "onAdDismissed: $providerType".logi(tag)
+                    actionHome()
+                }
+            })
         //回调中的 providerType 是广告商类型
     }
 
